@@ -13,6 +13,10 @@ export default function Header() {
             <Link to="/chats">
                 <Button sx={{color: "white", textDecoration: "none"}} variant="text">Chats</Button>
             </Link>
+
+            <Link to="/room/:roomId">
+                <Button sx={{color: "white", textDecoration: "none"}} variant="text">Room 1</Button>
+            </Link>
         </Card>
     )
 }

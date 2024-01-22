@@ -8,7 +8,7 @@ function App() {
     <div>
       <Container>
         <Header />
-        <Outlet />
+          <Outlet />
       </Container>
     </div>
   );

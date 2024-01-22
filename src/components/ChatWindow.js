@@ -8,15 +8,16 @@ import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import { useEffect, useState } from 'react';
 import InputLabel from "@mui/material/InputLabel";
-import { io } from "socket.io-client";
+import { useOutletContext, useParams } from "react-router-dom";
 
 export default function ChatWindow() {
     //setting initial state
-    const [socket, setSocket] = useState(null);
+    const { socket } = useOutletContext();
     const [message, setMessage] = useState("");
     const [chat, setChat] = useState([]);
     const [typing, setTyping] = useState(false);
-    const [typingTimeout, setTypingTimeout] = useState(null);
+    const [typingTimeout, setTypingTimeout] = useState(false);
+    const { roomId } = useParams();
 
     useEffect(() => {
         if (!socket) return;
@@ -39,10 +40,10 @@ export default function ChatWindow() {
 
     function handleInput(e) {
         setMessage(e.target.value);
-        socket.emit("typing-started");
-        if(typingTimeout) clearTimeout(typingTimeout);
+        socket.emit("typing-started", {roomId});
+        if (typingTimeout) clearTimeout(typingTimeout);
         setTypingTimeout(setTimeout(() => {
-            socket.emit("typing-stopped");
+            socket.emit("typing-stopped", {roomId});
         }, 1000));
     }
 
@@ -56,6 +57,9 @@ export default function ChatWindow() {
                     backgroundColor: "gray",
                     color: "white"
                 }}>
+                    {
+                    roomId && <Typography>Room: {roomId}</Typography>
+                    }
                 <Box sx={{ marginBottom: 5 }}>
                     {chat.map((data) => (
                         <Typography sx={{ textAlign: data.recieved ? "left" : "right" }} key={data.message}>{data.message}</Typography>

@@ -10,15 +10,15 @@ export default function Header() {
     return (
         <Card sx={{marginTop: 5, backgroundColor: "gray"}} raised>
             <Link to="/">
-                <Button sx={{color: "white", textDecoration: "none"}} variant="text">Home</Button>
+                <Button sx={{color: "white"}} variant="text">Home</Button>
             </Link>
 
             <Link to="/chats">
-                <Button sx={{color: "white", textDecoration: "none"}} variant="text">Chats</Button>
+                <Button sx={{color: "white"}} variant="text">Chats</Button>
             </Link>
 
             <Link to={`/room/${roomId}`}>
-                <Button sx={{color: "white", textDecoration: "none"}} variant="text">Room 1</Button>
+                <Button sx={{color: "white"}} variant="text">Room 1</Button>
             </Link>
         </Card>
     )

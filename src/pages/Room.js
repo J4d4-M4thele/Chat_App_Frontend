@@ -1,22 +1,18 @@
 import React, { useEffect } from 'react';
-import Box from "@mui/material/Box";
-import { Routes, Route, useParams } from "react-router-dom";
-import { io } from "socket.io-client";
+import { useParams, useOutletContext } from "react-router-dom";
+import ChatWindow from '../components/ChatWindow';
 
 export default function Room() {
     const params = useParams();
-    const socket = io();
+    const { socket } = useOutletContext();
 
     useEffect(() => {
-        socket.emit('join-room', {roomId: params.roomId});
+        if (!socket) return;
+        socket.emit('join-room', { roomId: params.roomId });
         console.log(params);
-    }, [params]);
+    }, [socket]);
 
     return (
-        <div>
-            <Box sx={{ display: "flex", justifyContent: "center" }}>
-                Room
-            </Box>
-        </div>
+        <ChatWindow />
     )
 }

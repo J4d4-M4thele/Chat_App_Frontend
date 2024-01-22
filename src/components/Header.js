@@ -2,8 +2,11 @@ import React from "react";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import { Link } from "react-router-dom";
+import { v4 as uuidv4 } from 'uuid';
 
 export default function Header() {
+    const roomId = uuidv4();
+
     return (
         <Card sx={{marginTop: 5, backgroundColor: "gray"}} raised>
             <Link to="/">
@@ -14,7 +17,7 @@ export default function Header() {
                 <Button sx={{color: "white", textDecoration: "none"}} variant="text">Chats</Button>
             </Link>
 
-            <Link to="/room/:roomId">
+            <Link to={`/room/${roomId}`}>
                 <Button sx={{color: "white", textDecoration: "none"}} variant="text">Room 1</Button>
             </Link>
         </Card>

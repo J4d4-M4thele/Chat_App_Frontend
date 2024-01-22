@@ -7,8 +7,8 @@ import SendIcon from '@mui/icons-material/Send';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import { useEffect, useState } from 'react';
-import { io } from "socket.io-client";
 import InputLabel from "@mui/material/InputLabel";
+import { io } from "socket.io-client";
 
 export default function ChatWindow() {
     //setting initial state
@@ -17,10 +17,6 @@ export default function ChatWindow() {
     const [chat, setChat] = useState([]);
     const [typing, setTyping] = useState(false);
     const [typingTimeout, setTypingTimeout] = useState(null);
-
-    useEffect(() => {
-        setSocket(io('http://localhost:4000'));
-    }, [])
 
     useEffect(() => {
         if (!socket) return;

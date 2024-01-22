@@ -1,12 +1,14 @@
 import React from 'react';
 import Container from '@mui/material/Container';
-import ChatWindow from './components/ChatWindow';
+import { Outlet } from "react-router-dom";
+import Header from "./components/Header";
 
 function App() {
   return (
     <div>
       <Container>
-        <ChatWindow />
+        <Header />
+        <Outlet />
       </Container>
     </div>
   );

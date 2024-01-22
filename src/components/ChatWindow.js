@@ -32,7 +32,7 @@ export default function ChatWindow() {
 
     function handleForm(e) {
         e.preventDefault();
-        socket.emit('send-message', { message });
+        socket.emit('send-message', { message, roomId });
         setChat((prev) => [...prev, { message, recieved: false }]);
         //clears text field
         setMessage('');

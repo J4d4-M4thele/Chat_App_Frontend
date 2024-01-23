@@ -1,17 +1,28 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import Box from "@mui/material/Box";
 import { Link, useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
+import { findRenderedDOMComponentWithClass } from "react-dom/test-utils";
 
-export default function Header() {
+export default function Header({socket}) {
     const navigate = useNavigate();
+    const [rooms, setRooms] = useState([]);
 
     function createNewRoom() {
         const roomId = uuidv4();
         navigate(`/room/${roomId}`);
+        socket.emit('new-room-created', { roomId });
+        setRooms([...rooms, roomId]);
     }
+
+    useEffect(() => {
+        if (!socket) return;
+        socket.on('new-room-created', ({ roomId }) => {
+            setRooms([...rooms, roomId]);
+        });
+    }, [socket])
 
     return (
         <Card sx={{ marginTop: 5, backgroundColor: "gray" }} raised>
@@ -21,9 +32,12 @@ export default function Header() {
                         <Button sx={{ color: "white" }} variant="text">Home</Button>
                     </Link>
                 </Box>
-                {/* <Link to={`/room/${roomId}`}>
-                <Button sx={{ color: "white" }} variant="text">Room 1</Button>
-            </Link> */}
+
+                {rooms.map((rooms) => (
+                    <Link to={`/room/${rooms}`}>
+                        <Button sx={{ color: "white" }} variant="text">{rooms}</Button>
+                    </Link>
+                ))}
 
                 <Button sx={{ color: "white" }} variant="text" onClick={createNewRoom}>
                     New Room

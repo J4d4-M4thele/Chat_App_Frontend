@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import Typography from '@mui/material/Typography';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -9,6 +9,8 @@ import Card from '@mui/material/Card';
 import { useEffect, useState } from 'react';
 import InputLabel from "@mui/material/InputLabel";
 import { useOutletContext, useParams } from "react-router-dom";
+import Button from "@mui/material/Button";
+import AttachFileIcon from '@mui/icons-material/AttachFile';
 
 export default function ChatWindow() {
     //setting initial state
@@ -18,6 +20,24 @@ export default function ChatWindow() {
     const [typing, setTyping] = useState(false);
     const [typingTimeout, setTypingTimeout] = useState(false);
     const { roomId } = useParams();
+    const fileRef = useRef();
+    
+    //selecting files to add to chat
+    function selectFile() {
+        fileRef.current.click();
+    }
+    
+    //reading file added
+    function fileSelected(e) {
+        const file = e.target.files[0];
+        if(!file) return;
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+            const data = reader.result;
+            socket.emit('upload', { data });
+        }
+    }
 
     useEffect(() => {
         if (!socket) return;
@@ -40,11 +60,15 @@ export default function ChatWindow() {
 
     function handleInput(e) {
         setMessage(e.target.value);
-        socket.emit("typing-started", {roomId});
+        socket.emit("typing-started", { roomId });
         if (typingTimeout) clearTimeout(typingTimeout);
         setTypingTimeout(setTimeout(() => {
-            socket.emit("typing-stopped", {roomId});
+            socket.emit("typing-stopped", { roomId });
         }, 1000));
+    }
+
+    async function removeRoom() {
+        socket.emit('room-removed', { roomId });
     }
 
     return (
@@ -57,9 +81,22 @@ export default function ChatWindow() {
                     backgroundColor: "gray",
                     color: "white"
                 }}>
+                <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                     {
-                    roomId && <Typography>Room: {roomId}</Typography>
+                        roomId && <Typography>Room: {roomId}</Typography>
                     }
+                    {
+                        roomId &&
+                        <Button
+                            size="small"
+                            variant="text"
+                            color="secondary"
+                            onClick={removeRoom}
+                        >
+                            Delete Room
+                        </Button>
+                    }
+                </Box>
                 <Box sx={{ marginBottom: 5 }}>
                     {chat.map((data) => (
                         <Typography sx={{ textAlign: data.recieved ? "left" : "right" }} key={data.message}>{data.message}</Typography>
@@ -88,6 +125,16 @@ export default function ChatWindow() {
                         onChange={handleInput}
                         endAdornment={
                             <InputAdornment position="end">
+                                <input onChange={fileSelected} ref={fileRef} type="file" style={{display: "none"}}/>
+                                <IconButton
+                                    type="button"
+                                    edge="end"
+                                    sx={{marginRight: 1}}
+                                    onClick={selectFile}
+                                >
+                                    <AttachFileIcon />
+                                </IconButton>
+                                
                                 <IconButton
                                     type="submit"
                                     edge="end"
